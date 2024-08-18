@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<title>VIDEO</title>
+		<meta name="description" content="Recherche vidéos">
+		<meta name="author" content="contact@ianasheu.com">
+		<link rel="stylesheet" type="text/css" href="./assets/css/video-style.css">
+		<script type="text/javascript" src="./assets/js/video-script.js"></script>
+		<link rel="manifest" type="application/manifest+json" href="./manifest.json">
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker
+					.register('./service-worker.js')
+					.then((registration) => {})
+					.catch((error) => {
+						console.log('Service Worker registration failed');
+					});
+			}
+		</script>
+	</head>
+	<body>
+		<div class="maintitle">
+			<div>
+				<div><h1>VIDEO</h1></div>
+				<div></div>
+			</div>
+			<p>Consulter <a href="https://www.ianasheu.com/video/README.md.html" target="_blank">la doc API</a> pour plus de details</p>
+		</div>
+		<form id="searchform" class="searchform">
+			<div class="formblock1">
+				<div>
+					<div><label for="keyword"><b>Titre,&nbsp;Réalisateur</b></label></div>
+					<div><input type="text" id="keyword" placeholder="Rechercher"></div>
+				</div>
+				<div>
+					<div class="categorytitle"><div><b>Catégorie</b></div><div><a id="resetcategory" href="javascript:void(0);">Reset</a></div></div>
+					<div id="categorylist" class="selectlist">
+					</div>
+				</div>
+			</div>
+			<div class="formblock2">
+				<div>
+					<div><b>Année</b></div>
+					<div><label for="minyearinput" class="rangelabel">Depuis</label><input type="range" id="minyearinput" min="1920" max="2030" step="10" value="1920">&nbsp;<span class="rangeoutput" id="minyearoutput">____</span></div>
+					<div><label for="maxyearinput" class="rangelabel">Jusqu'à</label><input type="range" id="maxyearinput" min="1920" max="2030" step="10" value="2030">&nbsp;<span class="rangeoutput" id="maxyearoutput"></span></div>
+				</div>
+				<div>
+					<div><b>Note</b></div>
+					<div><label for="minratinginput" class="rangelabel">Depuis</label><input type="range" id="minratinginput" min="0" max="5" step="0.5" value="0">&nbsp;<span class="rangeoutput" id="minratingoutput">_</span></div>
+					<div><label for="maxratinginput" class="rangelabel">Jusqu'à</label><input type="range" id="maxratinginput" min="0" max="5" step="0.5" value="5">&nbsp;<span class="rangeoutput" id="maxratingoutput"></span></div>
+				</div>
+			</div>
+			<div class="formblock3">
+				<div>
+					<div><b>Trier&nbsp;par</b></div>
+					<div><input type="radio" id="orderbytitle" name="orderby" value="title" checked>&nbsp;<label for="orderbytitle">Titres</label></div>
+					<div><input type="radio" id="orderbyyearasc" name="orderby" value="yearasc">&nbsp;<label for="orderbyyearasc">Années&nbsp;<img class="sortasc" src="./assets/img/arrow-up.svg" alt="up" title="Années croissantes"></label></div> <!-- &#x2BC5; &#x1F845; -->
+					<div><input type="radio" id="orderbyyeardesc" name="orderby" value="yeardesc">&nbsp;<label for="orderbyyeardesc">Années&nbsp;<img class="sortdesc" src="./assets/img/arrow-down.svg" alt="down" title="Années décroissantes"></label></div> <!-- &#x2BC6; &#x1F847; -->
+					<div><input type="radio" id="orderbyratingasc" name="orderby" value="ratingasc">&nbsp;<label for="orderbyratingasc">Notes&nbsp;<img class="sortasc" src="./assets/img/arrow-up.svg" alt="up" title="Notes croissante"></label></div>
+					<div><input type="radio" id="orderbyratingdesc" name="orderby" value="ratingdesc">&nbsp;<label for="orderbyratingdesc">Notes&nbsp;<img class="sortdesc" src="./assets/img/arrow-down.svg" alt="down" title="Notes décroissante"></label></div>
+				</div>
+			</div>
+		</form>
+		<div id="loadsome" class="loadsome"></div>
+		<div id="deck" class="deck"></div>
+		<div id="loadmore" class="loadmore"></div>
+	</body>
+</html>
