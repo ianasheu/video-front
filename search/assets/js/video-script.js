@@ -1,5 +1,4 @@
 /* globals */
-const showLog = false; /* affiche un minimum de log dans la console */
 
 const useCache = true; /* met en cache les reponses dans localStorage */
 const ttl = 3600; /* duree de vie du cache 1h */
@@ -57,7 +56,7 @@ window.onload = function() {
 
 	/* ajax */
 	let request = new XMLHttpRequest();
-	request.addEventListener('load', () => displayResult(request.responseURL, request.status, request.response, request.getResponseHeader("X-Total-Count")));
+	request.addEventListener('load', () => displayResult(request.responseURL, request.status, request.response, parseInt(request.getResponseHeader("X-Total-Count"))));
 	request.addEventListener('abort', () => console.log("Annulation Ajax"));
 	request.addEventListener('timeout', () => console.log("Timeout Ajax"));
 	request.addEventListener('error', () => console.log("Erreur Ajax"));
@@ -100,6 +99,9 @@ window.onload = function() {
 					document.querySelectorAll('input[id^="category"]:checked').forEach((chk) => {chk.checked = false;});
 					searchform.dispatchEvent(new Event('input', { bubbles: true }));
 				});
+			} else {
+				document.querySelector(".categorytitle").style.display = "none";
+				document.getElementById("categorylist").style.display = "none";
 			}
 			getFilters(true);
 		});
@@ -178,7 +180,17 @@ window.onload = function() {
 		const currentorderby = (document.querySelector('input[name="orderby"]:checked') ? document.querySelector('input[name="orderby"]:checked').value : "");
 
 		if ((currentkeyword != previouskeyword && currentkeyword != initkeyword) || currentkeyword != initkeyword) {
-			currentURLpath += "/keyword/*"+encodeURIComponent(currentkeyword.replace(/\s/g, "*"))+"*";
+			const regex = /"([^"]+)"|([^"]+)/g;
+			let rewritedkeyword = '';
+			let match;
+			while ((match = regex.exec(currentkeyword)) !== null) {
+				if (match[1]) {
+					rewritedkeyword += match[1].split(' ').map(mot => encodeURIComponent(mot)).join('+');
+				} else if (match[2]) {
+					rewritedkeyword += match[2].split(' ').map(mot => encodeURIComponent(mot)).join('*');
+				}
+			}
+			currentURLpath += "/keyword/*"+rewritedkeyword+"*";
 		}
 		if ((currentcategory.toString() != previouscategory.toString() && currentcategory.toString() != initcategory.toString()) || currentcategory.toString() != initcategory.toString()) {
 			currentURLpath += "/category/"+currentcategory.toString();
@@ -268,7 +280,6 @@ window.onload = function() {
 				const nowSec = Math.round(now.getTime()/1000);
 				
 				if (cache.datetime + ttl > nowSec) {
-					if (showLog) console.log("From Local Cache");
 					fromAjax = false;
 					displayResult(URL, cache.code, cache.response, cache.total);
 				} else {
@@ -285,7 +296,6 @@ window.onload = function() {
 	function getFromAjax(URL) {
 
 		if (URL) {
-			if (showLog) console.log("From URL: "+URL);
 			fromAjax = true;
 			if (offset > 0) {
 				loadmore.innerHTML = "... Chargement ...";
@@ -393,7 +403,6 @@ window.onload = function() {
 
 		if (fromAjax) {
 			endTime = performance.now()/1000;
-			if (showLog) console.log(`	Temps: ${(endTime - startTime).toFixed(2)} s`);
 			fromAjax = false;
 		}
 	}
@@ -419,7 +428,6 @@ function clearCache(forced) {
 			}
 		}
 	}
-	if (showLog || forced) console.log("Clear cache: "+total);
 }
 
 
@@ -514,5 +522,5 @@ function uuid() {
 	return '00000000-00000000'.replace(/[0]/g, function(c) {
 		var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
 		return v.toString(16);
-  });
+	});
 }
